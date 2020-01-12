@@ -1,1 +1,1 @@
-include ':app', ':bluetoothserialmanagerlib'
+include ':app', ':rxbluetoothserial'
