@@ -1,4 +1,4 @@
-package com.github.giovanniandreuzza.bluetoothserialmanagerlib
+package com.github.giovanniandreuzza.rxbluetoothserial
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
