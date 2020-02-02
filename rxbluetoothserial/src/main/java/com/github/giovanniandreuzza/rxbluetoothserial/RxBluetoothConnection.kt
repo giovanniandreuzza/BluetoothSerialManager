@@ -2,8 +2,7 @@ package com.github.giovanniandreuzza.rxbluetoothserial
 
 import android.bluetooth.BluetoothSocket
 import android.util.Log
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
+import io.reactivex.Observable
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -18,14 +17,14 @@ class RxBluetoothConnection(private val bluetoothSocket: BluetoothSocket) {
 
     private val outputStream: OutputStream = bluetoothSocket.outputStream
 
-    private var observeInputStream: Flowable<Byte>? = null
+    private var observeInputStream: Observable<Byte>? = null
 
     fun isConnected(): Boolean = bluetoothSocket.isConnected
 
-    fun listen(): Flowable<Byte> {
+    fun listen(): Observable<Byte> {
         if (observeInputStream == null) {
-            observeInputStream = Flowable.create<Byte>({ subscriber ->
-                while (!subscriber.isCancelled) {
+            observeInputStream = Observable.create<Byte> { subscriber ->
+                while (!subscriber.isDisposed) {
                     try {
                         subscriber.onNext(inputStream.read().toByte())
                     } catch (e: IOException) {
@@ -36,7 +35,7 @@ class RxBluetoothConnection(private val bluetoothSocket: BluetoothSocket) {
                         }
                     }
                 }
-            }, BackpressureStrategy.BUFFER).share()
+            }
         }
 
         return observeInputStream!!
