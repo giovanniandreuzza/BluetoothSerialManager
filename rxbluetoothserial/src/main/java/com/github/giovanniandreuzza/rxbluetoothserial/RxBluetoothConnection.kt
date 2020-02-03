@@ -21,25 +21,7 @@ class RxBluetoothConnection(private val bluetoothSocket: BluetoothSocket) {
 
     fun isConnected(): Boolean = bluetoothSocket.isConnected
 
-    fun listen(): Observable<Byte> {
-        if (observeInputStream == null) {
-            observeInputStream = Observable.create<Byte> { subscriber ->
-                while (!subscriber.isDisposed) {
-                    try {
-                        subscriber.onNext(inputStream.read().toByte())
-                    } catch (e: IOException) {
-                        subscriber.onError(IOException("Can't read stream", e))
-                    } finally {
-                        if (!isConnected()) {
-                            close()
-                        }
-                    }
-                }
-            }
-        }
-
-        return observeInputStream!!
-    }
+    fun listen(): Byte = inputStream.read().toByte()
 
     fun send(byteArray: ByteArray): Boolean {
         return if (!isConnected()) false else try {
